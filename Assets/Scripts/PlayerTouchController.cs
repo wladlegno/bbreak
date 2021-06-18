@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using DefaultNamespace;
 using UnityEditor;
-using UnityEditor.Il2Cpp;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UIElements;
@@ -18,7 +17,7 @@ public class PlayerTouchController : MonoBehaviour
     private float _distanceBounceLine = 10f;
     private int _currentReflectionsBounceLine = 0;
     private int _maxReflectionsBounceLine = 1;
-    private Vector3 _pos = new Vector3();
+    // private Vector3 _pos = new Vector3();
     private List<Vector3> _points;
 
     private bool _isAiming;
@@ -54,18 +53,17 @@ public class PlayerTouchController : MonoBehaviour
 
     void Update()
     {
-        /*
         if (Input.touchCount <= 0) return;
         _touch = Input.GetTouch(0);
 
         var touchPos = _touch.position;
         var touchVector = new Vector3(touchPos.x, touchPos.y, 0);
-        var createPos = Camera.main.ScreenToWorldPoint(touchPos);
-        */
+        var createPos = (Vector2) Camera.main.ScreenToWorldPoint(touchPos);
 
         var cursorPositionOnCam = (Vector2) Camera.main.ScreenToWorldPoint(Input.mousePosition);
         var startPoint = (Vector2) transform.position;
-        var direction = (cursorPositionOnCam - startPoint).normalized;
+        // var direction = (cursorPositionOnCam - startPoint).normalized;
+        var direction = (createPos - startPoint).normalized;
 
         if (!Input.GetMouseButton(0))
         {
@@ -83,7 +81,8 @@ public class PlayerTouchController : MonoBehaviour
         _isAiming = true;
 
         _currentReflectionsBounceLine = 0;
-        var hit = Physics2D.Raycast(startPoint, (cursorPositionOnCam - startPoint).normalized, _distanceBounceLine);
+        // var hit = Physics2D.Raycast(startPoint, (cursorPositionOnCam - startPoint).normalized, _distanceBounceLine);
+        var hit = Physics2D.Raycast(startPoint, (createPos - startPoint).normalized, _distanceBounceLine);
 
         _points.Clear();
         _points.Add(startPoint);

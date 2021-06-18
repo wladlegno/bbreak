@@ -4,9 +4,10 @@ namespace DefaultNamespace
 {
     public static class Helpers
     {
+        private static readonly Random Random = new Random();
         public static bool GetChance(int chance, int seed)
         {
-            var randomNumber = new Random(seed).Next(100);
+            var randomNumber = Random.Next(100);
             return randomNumber < chance;
         }
     }

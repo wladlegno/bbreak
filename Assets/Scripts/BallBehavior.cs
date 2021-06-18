@@ -5,20 +5,12 @@ namespace DefaultNamespace
 {
     public class BallBehavior : MonoBehaviour
     {
-        public delegate void BallTouchBottomWallAction(GameObject gameObject);
-
-        public static event BallTouchBottomWallAction OnBallTouchBottomWall;
-
         private Vector3 _startingPosition;
         private Rigidbody2D _rb;
-        public bool IsShot { get; private set; }
-        public bool IsFlying { get; private set; }
 
         private void Start()
         {
             _startingPosition = gameObject.transform.position;
-            IsShot = false;
-            IsFlying = false;
             _rb = GetComponent<Rigidbody2D>();
             Physics2D.IgnoreLayerCollision(9, 9, true);
             _rb.freezeRotation = true;
@@ -27,24 +19,24 @@ namespace DefaultNamespace
         private void Update()
         {
             var velocity = _rb.velocity;
-            _rb.AddRelativeForce(velocity.normalized * 20f - velocity);
+            _rb.AddForce(velocity.normalized*20f - velocity, ForceMode2D.Impulse);
         }
 
         private void OnEnable()
         {
-            OnBallTouchBottomWall += BallToBase;
+            GameEvents.Current.OnBallTouchBottomWall += BallToBase;
         }
 
         private void OnDisable()
         {
-            OnBallTouchBottomWall -= BallToBase;
+            GameEvents.Current.OnBallTouchBottomWall -= BallToBase;
         }
 
         private void OnCollisionEnter2D(Collision2D other)
         {
             if (other.gameObject.CompareTag("wall destroyer"))
             {
-                OnBallTouchBottomWall?.Invoke(gameObject);
+                GameEvents.Current.RaiseOnBallTouchBottomWall(gameObject);
             }
         }
 

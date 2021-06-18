@@ -9,14 +9,20 @@ namespace DefaultNamespace
     public enum BlockType
     {
         Default,
-        AddBall
+        AddBall,
+        Explosive,
+        Shifter
     }
 
     public class BlockBehavior : MonoBehaviour
     {
         public delegate void AddBallAction();
 
-        public static event AddBallAction OnAddBall;
+        public delegate void ShiftBlockAction();
+
+        public delegate void ExplodeBlockAction();
+
+
         private BlockType _blockType;
 
         public BlockType BlockType
@@ -30,6 +36,7 @@ namespace DefaultNamespace
         }
 
         private int _healthPoints;
+
         public int HealthPoints
         {
             get => _healthPoints;
@@ -40,7 +47,7 @@ namespace DefaultNamespace
                 ScorePoints = value;
             }
         }
-        
+
         public int ScorePoints { get; set; }
 
         private TextMeshProUGUI _healthDisplay;
@@ -60,21 +67,34 @@ namespace DefaultNamespace
         {
             if (other.gameObject.GetComponent<BallBehavior>())
             {
-                DamageBlock();
+                Damage();
             }
         }
 
-        private void DamageBlock()
+        private void Damage()
         {
             HealthPoints -= 1;
+
             if (HealthPoints == 0)
             {
-                if (BlockType == BlockType.AddBall)
-                    OnAddBall?.Invoke();
                 Destroy(gameObject);
             }
+        }
 
-            _blockAppearanceBehavior.SetHealth(HealthPoints);
+        private void OnDestroy()
+        {
+            switch (_blockType)
+            {
+                case BlockType.AddBall:
+                    GameEvents.Current.RaiseOnAddBall();
+                    break;
+                case BlockType.Explosive:
+                    GameEvents.Current.RaiseOnExplodeBlock(gameObject);
+                    break;
+                case BlockType.Shifter:
+                    GameEvents.Current.RaiseOnShiftBlock();
+                    break;
+            }
         }
     }
 }

@@ -13,8 +13,6 @@ namespace DefaultNamespace
 {
     public class PlayerShootBehavior : MonoBehaviour
     {
-        public delegate void NoBallsFlyingAction();
-        public static event NoBallsFlyingAction OnNoBallsFlying;
         
         private readonly List<GameObject> _balls = new List<GameObject>(5);
         public GameObject ballPrefab;
@@ -32,16 +30,16 @@ namespace DefaultNamespace
 
         private void OnEnable()
         {
-            BallBehavior.OnBallTouchBottomWall += RaiseOnBallTouchBottomWall;
-            BlockBehavior.OnAddBall += RaiseOnAddBall;
-            OnNoBallsFlying += AddBallsToCapacity;
+            GameEvents.Current.OnBallTouchBottomWall += RaiseOnBallTouchBottomWall;
+            GameEvents.Current.OnAddBall += RaiseOnAddBall;
+            GameEvents.Current.OnNoBallsFlying += AddBallsToCapacity;
         }
 
         private void OnDisable()
         {
-            BallBehavior.OnBallTouchBottomWall -= RaiseOnBallTouchBottomWall;
-            BlockBehavior.OnAddBall -= RaiseOnAddBall;
-            OnNoBallsFlying -= AddBallsToCapacity;
+            GameEvents.Current.OnBallTouchBottomWall -= RaiseOnBallTouchBottomWall;
+            GameEvents.Current.OnAddBall -= RaiseOnAddBall;
+            GameEvents.Current.OnNoBallsFlying -= AddBallsToCapacity;
         }
 
         public IEnumerator Shoot(Vector2 direction)
@@ -89,10 +87,9 @@ namespace DefaultNamespace
         private void RaiseOnBallTouchBottomWall(GameObject ego)
         {
             --BallsFlying;
-            print($"balls flying {BallsFlying}");
 
             if (BallsFlying == 0)
-                OnNoBallsFlying?.Invoke();
+                GameEvents.Current.RaiseOnNoBallsFlying();
         }
 
         private void RaiseOnAddBall()

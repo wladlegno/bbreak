@@ -62,7 +62,7 @@
      <Compile Include="Assets\Scripts\BallReflect.cs" />
      <Compile Include="Assets\Scripts\BlockAppearanceBehavior.cs" />
      <Compile Include="Assets\Scripts\BlockBehavior.cs" />
-     <Compile Include="Assets\Scripts\GlobalEventManager.cs" />
+     <Compile Include="Assets\Scripts\GameEvents.cs" />
      <Compile Include="Assets\Scripts\GridManager.cs" />
      <Compile Include="Assets\Scripts\Helpers.cs" />
      <Compile Include="Assets\Scripts\LevelingManager.cs" />

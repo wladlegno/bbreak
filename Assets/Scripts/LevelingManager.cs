@@ -9,14 +9,14 @@ namespace DefaultNamespace
 
         private void OnEnable()
         {
-            PlayerShootBehavior.OnNoBallsFlying += LevelUp;
-            GlobalEventManager.OnGameOver += ResetLevel;
+            GameEvents.Current.OnNoBallsFlying += LevelUp;
+            GameEvents.Current.OnGameOver += ResetLevel;
         }
 
         private void OnDisable()
         {
-            PlayerShootBehavior.OnNoBallsFlying -= LevelUp;
-            GlobalEventManager.OnGameOver -= ResetLevel;
+            GameEvents.Current.OnNoBallsFlying -= LevelUp;
+            GameEvents.Current.OnGameOver -= ResetLevel;
         }
 
         private void LevelUp()
